@@ -13,7 +13,7 @@ import aiohttp
     "astrbot_plugin_github",
     "moemoli",
     "一款根据github commit hash 自动审核的插件",
-    "0.1.0",
+    "0.1.1",
 )
 class MyPlugin(Star):
     def __init__(self, context: Context):
@@ -35,6 +35,10 @@ class MyPlugin(Star):
         repo = repo.replace("http://github.com/", "")
         repo = repo.replace("git@github.com:", "")
         repo = repo.replace(".git", "")
+        if repo == "关":
+            await self.delete_kv_data(event.get_group_id())
+            yield event.plain_result("已经关闭本群的审核功能")  # 发送一条纯文本消息
+            return
         await self.put_kv_data(event.get_group_id(), repo)
         yield event.plain_result(f"已经设置本群审核仓库为 {repo}")  # 发送一条纯文本消息
 
